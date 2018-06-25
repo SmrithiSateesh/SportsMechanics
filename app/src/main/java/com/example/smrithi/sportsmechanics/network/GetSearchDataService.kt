@@ -1,15 +1,19 @@
 package com.example.basavaraj.sportsmechanics.network
 
-import com.example.basavaraj.sportsmechanics.model.SearchList
-import com.example.basavaraj.sportsmechanics.model.SearchRequest
-import retrofit2.http.Body
-import retrofit2.http.POST
-import retrofit2.Call
 
+import com.example.smrithi.sportsmechanics.model.SearchList
+import com.example.smrithi.sportsmechanics.model.SearchRequest
+import retrofit2.Call
+import retrofit2.http.GET
+import retrofit2.http.Query
 
 interface GetSearchDataService {
 
    // @POST("5b20997930000088005c70d6")
-    @POST("api/video_searches/search.json")
-    fun createUser(@Body searchRequest: SearchRequest): Call<SearchList>
+  /*  @POST("api/video_searches/search.json")
+    fun createUser(@Body searchRequest: SearchRequest): Call<SearchList>*/
+
+    @GET("api/search.json")
+   fun createUser(@Query ("key") keyValue : String): Call<SearchList>
+
 }

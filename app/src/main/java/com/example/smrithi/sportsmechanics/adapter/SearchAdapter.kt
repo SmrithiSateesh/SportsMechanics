@@ -20,6 +20,8 @@ class SearchAdapter(private val dataList: List<SearchResponse>) : RecyclerView.A
         holder.txtID.setText("ID: " + dataList[position].id.toString())
         holder.txtVideoFile.setText("Video File: " + dataList[position].video_file)
         holder.txtVideoPath.setText("Video Path: " + dataList[position].video_location)
+
+        holder.txtVideoPath.getPaint().setUnderlineText(true)
     }
 
     override fun getItemCount(): Int {
