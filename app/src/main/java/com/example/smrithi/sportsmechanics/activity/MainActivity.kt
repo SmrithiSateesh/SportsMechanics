@@ -3,6 +3,7 @@ package com.example.smrithi.sportsmechanics.activity
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
@@ -10,17 +11,23 @@ import com.example.basavaraj.sportsmechanics.network.GetSearchDataService
 import com.example.basavaraj.sportsmechanics.network.RetrofitInstance
 import com.example.smrithi.sportsmechanics.R
 import com.example.smrithi.sportsmechanics.adapter.SearchAdapter
+import com.example.smrithi.sportsmechanics.interfaces.SearchClickListener
 import com.example.smrithi.sportsmechanics.model.SearchList
-import com.example.smrithi.sportsmechanics.model.SearchRequest
 import com.example.smrithi.sportsmechanics.model.SearchResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import android.support.v7.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
+import android.content.Intent
+import android.net.Uri
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), SearchClickListener {
+    override fun onClick(dataList: SearchResponse) {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(dataList.video_location))
+        startActivity(browserIntent)
+    }
+
 
     var pageNo = 1
 
@@ -40,7 +47,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        /*rvSearchResult.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+      /*  rvSearchResult.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
 
@@ -79,7 +86,7 @@ class MainActivity : AppCompatActivity() {
                 generateSearchList(response!!.body()!!.getData()!!, progressDialog)
             }
         })*/
-        val call = service.createUser(edtSearch.text.toString())
+        val call = service.createSearchResquest(edtSearch.text.toString())
         call.enqueue(object : Callback<SearchList>{
             override fun onFailure(call: Call<SearchList>?, t: Throwable?) {
                 Toast.makeText(this@MainActivity, "Something went wrong. Please try later!", Toast.LENGTH_SHORT).show()
@@ -93,7 +100,6 @@ class MainActivity : AppCompatActivity() {
                     progressDialog!!.visibility = View.GONE
                     Toast.makeText(applicationContext, "No results found.", Toast.LENGTH_LONG).show()
                 }
-
             }
         })
     }
@@ -102,7 +108,7 @@ class MainActivity : AppCompatActivity() {
         if (searchDataList.isEmpty()) {
             Toast.makeText(getApplicationContext(), "No results found.", Toast.LENGTH_LONG).show()
         } else {
-            val adapter = SearchAdapter(searchDataList)
+            val adapter = SearchAdapter(searchDataList, this)
             val layoutManager = LinearLayoutManager(this@MainActivity)
             rvSearchResult!!.layoutManager = layoutManager
             rvSearchResult!!.adapter = adapter

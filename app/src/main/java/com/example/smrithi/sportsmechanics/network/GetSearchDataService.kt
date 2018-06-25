@@ -1,6 +1,5 @@
 package com.example.basavaraj.sportsmechanics.network
 
-
 import com.example.smrithi.sportsmechanics.model.SearchList
 import com.example.smrithi.sportsmechanics.model.SearchRequest
 import retrofit2.Call
@@ -14,6 +13,5 @@ interface GetSearchDataService {
     fun createUser(@Body searchRequest: SearchRequest): Call<SearchList>*/
 
     @GET("api/search.json")
-   fun createUser(@Query ("key") keyValue : String): Call<SearchList>
-
+    fun createSearchResquest(@Query ("key") keyValue : String): Call<SearchList>
 }
