@@ -3,9 +3,7 @@ package com.example.smrithi.sportsmechanics.activity
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.widget.ProgressBar
 import android.widget.Toast
 import com.example.basavaraj.sportsmechanics.network.GetSearchDataService
 import com.example.basavaraj.sportsmechanics.network.RetrofitInstance
@@ -24,12 +22,15 @@ import android.net.Uri
 
 class MainActivity : AppCompatActivity(), SearchClickListener {
     override fun onClick(dataList: SearchResponse) {
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(dataList.video_location))
-        startActivity(browserIntent)
+        /*val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(dataList.video_location))
+        startActivity(browserIntent)*/
+
+       /* var bundle = Bundle()
+        bundle.putParcelable("dataList", dataList)*/
+        var intent = Intent(this@MainActivity, WebViewActivity::class.java)
+        intent.putExtra("videoPath", dataList.video_location)
+        startActivity(intent)
     }
-
-
-    var pageNo = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +43,7 @@ class MainActivity : AppCompatActivity(), SearchClickListener {
                 if(edtSearch!!.getText().toString().isEmpty()){
                     Toast.makeText(getApplicationContext(), "Enter field name to search.", Toast.LENGTH_LONG).show()
                 }else{
-                    loadSearchResults(pageNo)
+                    loadSearchResults()
                 }
             }
         })
@@ -64,7 +65,7 @@ class MainActivity : AppCompatActivity(), SearchClickListener {
         })*/
     }
 
-    private fun loadSearchResults(pageNo: Int) {
+    private fun loadSearchResults() {
         val retrofitInstance = RetrofitInstance()
         val service = retrofitInstance.getRetrofitInstance().create(GetSearchDataService::class.java)
 
@@ -91,14 +92,15 @@ class MainActivity : AppCompatActivity(), SearchClickListener {
             override fun onFailure(call: Call<SearchList>?, t: Throwable?) {
                 Toast.makeText(this@MainActivity, "Something went wrong. Please try later!", Toast.LENGTH_SHORT).show()
                 progressDialog!!.visibility = View.GONE
+                txt_no_result.visibility = View.GONE
             }
 
             override fun onResponse(call: Call<SearchList>?, response: Response<SearchList>?) {
                 if(response!!.body()!!.data != null){
-                    generateSearchList(response!!.body()!!.getData()!!)
+                    generateSearchList(response.body()!!.getData()!!)
                 } else {
                     progressDialog!!.visibility = View.GONE
-                    Toast.makeText(applicationContext, "No results found.", Toast.LENGTH_LONG).show()
+                    txt_no_result.visibility = View.VISIBLE
                 }
             }
         })

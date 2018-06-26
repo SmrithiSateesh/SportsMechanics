@@ -1,6 +1,9 @@
 package com.example.smrithi.sportsmechanics.model;
 
-public class SearchResponse {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class SearchResponse implements Parcelable{
 
     private int id;
     private int sno;
@@ -35,6 +38,96 @@ public class SearchResponse {
     private int no_ball;
     private String video_file;
     private String video_location;
+
+    public SearchResponse(Parcel in) {
+        id = in.readInt();
+        sno = in.readInt();
+        created_at = in.readString();
+        updated_at = in.readString();
+        match_year = in.readString();
+        competition_name = in.readString();
+        match_type_name = in.readString();
+        match_name = in.readString();
+        innings_no = in.readInt();
+        day_no = in.readInt();
+        session_no = in.readInt();
+        ground_name = in.readString();
+        striker_name = in.readString();
+        runs = in.readInt();
+        runs_text = in.readString();
+        striker_bat_type = in.readString();
+        shot_name = in.readString();
+        wicket_type = in.readString();
+        bowler_name = in.readString();
+        bowling_direction = in.readString();
+        bowler_specialization = in.readString();
+        bowl_type_name = in.readString();
+        uncomfortable = in.readInt();
+        beaten = in.readInt();
+        region = in.readString();
+        bowl_line = in.readString();
+        bowl_length = in.readString();
+        bye = in.readInt();
+        leg_bye = in.readInt();
+        wide = in.readInt();
+        no_ball = in.readInt();
+        video_file = in.readString();
+        video_location = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeInt(sno);
+        dest.writeString(created_at);
+        dest.writeString(updated_at);
+        dest.writeString(match_year);
+        dest.writeString(competition_name);
+        dest.writeString(match_type_name);
+        dest.writeString(match_name);
+        dest.writeInt(innings_no);
+        dest.writeInt(day_no);
+        dest.writeInt(session_no);
+        dest.writeString(ground_name);
+        dest.writeString(striker_name);
+        dest.writeInt(runs);
+        dest.writeString(runs_text);
+        dest.writeString(striker_bat_type);
+        dest.writeString(shot_name);
+        dest.writeString(wicket_type);
+        dest.writeString(bowler_name);
+        dest.writeString(bowling_direction);
+        dest.writeString(bowler_specialization);
+        dest.writeString(bowl_type_name);
+        dest.writeInt(uncomfortable);
+        dest.writeInt(beaten);
+        dest.writeString(region);
+        dest.writeString(bowl_line);
+        dest.writeString(bowl_length);
+        dest.writeInt(bye);
+        dest.writeInt(leg_bye);
+        dest.writeInt(wide);
+        dest.writeInt(no_ball);
+        dest.writeString(video_file);
+        dest.writeString(video_location);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<SearchResponse> CREATOR = new Creator<SearchResponse>() {
+        @Override
+        public SearchResponse createFromParcel(Parcel in) {
+            return new SearchResponse(in);
+        }
+
+        @Override
+        public SearchResponse[] newArray(int size) {
+            return new SearchResponse[size];
+        }
+    };
 
     public int getId() {
         return id;

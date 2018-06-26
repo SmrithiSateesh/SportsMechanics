@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import com.example.smrithi.sportsmechanics.R
 import com.example.smrithi.sportsmechanics.interfaces.SearchClickListener
 import com.example.smrithi.sportsmechanics.model.SearchResponse
@@ -22,10 +23,12 @@ class SearchAdapter(private val dataList: List<SearchResponse>, val clickListene
     override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
         holder.txtID.setText("ID: " + dataList[position].id.toString())
         holder.striker_name.setText("Striker Name: " + dataList[position].striker_name)
-        holder.txtVideoPath.setText(" " + dataList[position].video_location)
-        holder.txtVideoPath.getPaint().setUnderlineText(true)
+        holder.bowler_name.setText("Bowler Name: " + dataList[position].bowler_name)
+        holder.match_name.setText("Match Name: " + dataList[position].match_name)
+        holder.match_type.setText("Match Type: " + dataList[position].match_type_name)
+        holder.match_year.setText("Match Year: " + dataList[position].match_year)
 
-        holder.txtVideoPath.setOnClickListener(object : View.OnClickListener{
+        holder.row.setOnClickListener(object : View.OnClickListener{
             override fun onClick(v: View?) {
                 clickListener.onClick(dataList[position])
             }
@@ -40,12 +43,21 @@ class SearchAdapter(private val dataList: List<SearchResponse>, val clickListene
 
         var txtID: TextView
         var striker_name: TextView
-        var txtVideoPath: TextView
+        var bowler_name : TextView
+        var match_name : TextView
+        var match_type : TextView
+        var match_year : TextView
+        var row : LinearLayout
+
 
         init {
             txtID = itemView.findViewById<TextView>(R.id.txt_id)
             striker_name = itemView.findViewById(R.id.striker_name)
-            txtVideoPath = itemView.findViewById(R.id.txt_video_path)
+            bowler_name = itemView.findViewById(R.id.txt_Bowler_Name)
+            match_name = itemView.findViewById(R.id.txt_match_name)
+            match_type = itemView.findViewById(R.id.txt_match_type)
+            match_year = itemView.findViewById(R.id.txt_match_year)
+            row = itemView.findViewById(R.id.row)
         }
     }
 }
