@@ -17,17 +17,11 @@ import retrofit2.Callback
 import retrofit2.Response
 import kotlinx.android.synthetic.main.activity_main.*
 import android.content.Intent
-import android.net.Uri
-
 
 class MainActivity : AppCompatActivity(), SearchClickListener {
     override fun onClick(dataList: SearchResponse) {
-        /*val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(dataList.video_location))
-        startActivity(browserIntent)*/
 
-       /* var bundle = Bundle()
-        bundle.putParcelable("dataList", dataList)*/
-        var intent = Intent(this@MainActivity, WebViewActivity::class.java)
+        val intent = Intent(this@MainActivity, WebViewActivity::class.java)
         intent.putExtra("videoPath", dataList.video_location)
         startActivity(intent)
     }
