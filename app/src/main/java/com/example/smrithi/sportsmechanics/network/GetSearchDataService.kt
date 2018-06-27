@@ -13,5 +13,7 @@ interface GetSearchDataService {
     fun createUser(@Body searchRequest: SearchRequest): Call<SearchList>*/
 
     @GET("api/search.json")
-    fun createSearchResquest(@Query ("key") keyValue : String): Call<SearchList>
+    fun createSearchResquest(@Query ("key") keyValue : String,
+                             @Query ("page") page : Int,
+                             @Query ("per_page") per_page : Int): Call<SearchList>
 }

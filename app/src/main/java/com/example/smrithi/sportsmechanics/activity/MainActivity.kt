@@ -17,6 +17,9 @@ import retrofit2.Callback
 import retrofit2.Response
 import kotlinx.android.synthetic.main.activity_main.*
 import android.content.Intent
+import android.os.Handler
+import com.example.smrithi.sportsmechanics.util.PaginationScrollListener
+
 
 class MainActivity : AppCompatActivity(), SearchClickListener {
     override fun onClick(dataList: SearchResponse) {
@@ -26,62 +29,127 @@ class MainActivity : AppCompatActivity(), SearchClickListener {
         startActivity(intent)
     }
 
+    private val PAGE_START = 1
+    private var isLoading = false
+    private var isLastPage = false
+    private val TOTAL_PAGES = 7
+    private var currentPage = PAGE_START
+    lateinit var adapter : SearchAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        adapter = SearchAdapter(this)
+
         progressDialog!!.visibility = View.GONE
 
+        val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         imgSearch.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
-                if(edtSearch!!.getText().toString().isEmpty()){
+                adapter.clearAll()
+                adapter.notifyDataSetChanged()
+                txt_no_result.visibility = View.GONE
+                if (edtSearch!!.getText().toString().isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Enter field name to search.", Toast.LENGTH_LONG).show()
-                }else{
-                    loadSearchResults()
+                } else {
+                    loadFirstPage()
                 }
             }
         })
 
-      /*  rvSearchResult.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-
-                if (!recyclerView!!.canScrollVertically(1)) {
-                   pageNo = pageNo + 1
-                   loadSearchResults(pageNo)
-                }
-                if (!recyclerView!!.canScrollVertically(-1)) {
-                    if(pageNo > 1)
-                    pageNo = pageNo - 1
-                    loadSearchResults(pageNo)
-                }
+        rvSearchResult.setLayoutManager(linearLayoutManager)
+        rvSearchResult.setAdapter(adapter)
+        rvSearchResult.addOnScrollListener(object : PaginationScrollListener(linearLayoutManager){
+            override fun loadMoreItems() {
+                isLoading = true
+                currentPage += 1
+                Handler().postDelayed(Runnable { loadNextPage() }, 1000)
             }
-        })*/
+
+            override fun getTotalPageCount(): Int {
+                return TOTAL_PAGES
+            }
+
+            override fun isLastPage(): Boolean {
+                return isLastPage
+            }
+
+            override fun isLoading(): Boolean {
+                return isLoading
+            }
+
+        })
     }
 
-    private fun loadSearchResults() {
+    private fun loadFirstPage() {
+        progressDialog!!.visibility = View.VISIBLE
+        val retrofitInstance = RetrofitInstance()
+        val service = retrofitInstance.getRetrofitInstance().create(GetSearchDataService::class.java)
+        val call = service.createSearchResquest(edtSearch.text.toString(), currentPage, 10)
+
+        call.enqueue(object : Callback<SearchList>{
+            override fun onFailure(call: Call<SearchList>?, t: Throwable?) {
+                Toast.makeText(this@MainActivity, "Something went wrong. Please try later!", Toast.LENGTH_SHORT).show()
+                progressDialog!!.visibility = View.GONE
+                txt_no_result.visibility = View.GONE
+            }
+
+            override fun onResponse(call: Call<SearchList>?, response: Response<SearchList>?) {
+                progressDialog.setVisibility(View.GONE)
+                if(response!!.body()!!.data != null){
+                    txt_no_result.visibility = View.GONE
+                    rvSearchResult.visibility = View.VISIBLE
+                    adapter.addAll(response!!.body()!!.getData()!!)
+                } else {
+                    progressDialog!!.visibility = View.GONE
+                    txt_no_result.visibility = View.VISIBLE
+                    rvSearchResult.visibility = View.GONE
+                }
+                if (currentPage <= TOTAL_PAGES)
+                    adapter.addLoadingFooter()
+                else
+                    isLastPage = true
+            }
+
+        })
+    }
+
+    private fun loadNextPage() {
+        progressDialog!!.visibility = View.VISIBLE
+
+        val retrofitInstance = RetrofitInstance()
+        val service = retrofitInstance.getRetrofitInstance().create(GetSearchDataService::class.java)
+        val call = service.createSearchResquest(edtSearch.text.toString(), currentPage, 10)
+
+        call.enqueue(object : Callback<SearchList> {
+            override fun onResponse(call: Call<SearchList>, response: Response<SearchList>) {
+                adapter.removeLoadingFooter()
+                isLoading = false
+
+                adapter.addAll(response!!.body()!!.getData()!!)
+
+                if (currentPage !== TOTAL_PAGES)
+                    adapter.addLoadingFooter()
+                else
+                    isLastPage = true
+                progressDialog!!.visibility = View.GONE
+            }
+
+            override fun onFailure(call: Call<SearchList>, t: Throwable) {
+                t.printStackTrace()
+                // TODO: 08/11/16 handle failure
+            }
+        })
+    }
+
+/*    private fun loadSearchResults(page_no: Int) {
         val retrofitInstance = RetrofitInstance()
         val service = retrofitInstance.getRetrofitInstance().create(GetSearchDataService::class.java)
 
         progressDialog!!.visibility = View.VISIBLE
-      /*  val searchRequest = SearchRequest()
-        searchRequest.page = 1
-        searchRequest.per_page = 10
-        val videosearchBean = SearchRequest.VideoSearchBean()
-        videosearchBean.key = edtSearch.text.toString()
-        searchRequest.setVideo_search(videosearchBean)
-        val call = service.createUser(searchRequest)*/
-        /*call.enqueue(object : Callback<SearchList> {
-            override fun onFailure(call: Call<SearchList>?, t: Throwable?) {
-                Toast.makeText(this@MainActivity, "Something went wrong. Please try later!", Toast.LENGTH_SHORT).show()
-                progressDialog!!.visibility = View.GONE
-            }
-
-            override fun onResponse(call: Call<SearchList>?, response: Response<SearchList>?) {
-                generateSearchList(response!!.body()!!.getData()!!, progressDialog)
-            }
-        })*/
-        val call = service.createSearchResquest(edtSearch.text.toString())
+        val call = service.createSearchResquest(edtSearch.text.toString(), page_no, 10)
         call.enqueue(object : Callback<SearchList>{
             override fun onFailure(call: Call<SearchList>?, t: Throwable?) {
                 Toast.makeText(this@MainActivity, "Something went wrong. Please try later!", Toast.LENGTH_SHORT).show()
@@ -91,10 +159,12 @@ class MainActivity : AppCompatActivity(), SearchClickListener {
 
             override fun onResponse(call: Call<SearchList>?, response: Response<SearchList>?) {
                 if(response!!.body()!!.data != null){
+
                     generateSearchList(response.body()!!.getData()!!)
                 } else {
                     progressDialog!!.visibility = View.GONE
                     txt_no_result.visibility = View.VISIBLE
+                    rvSearchResult.visibility = View.GONE
                 }
             }
         })
@@ -104,11 +174,13 @@ class MainActivity : AppCompatActivity(), SearchClickListener {
         if (searchDataList.isEmpty()) {
             Toast.makeText(getApplicationContext(), "No results found.", Toast.LENGTH_LONG).show()
         } else {
+            rvSearchResult.visibility = View.VISIBLE
+            txt_no_result.visibility = View.GONE
             val adapter = SearchAdapter(searchDataList, this)
             val layoutManager = LinearLayoutManager(this@MainActivity)
             rvSearchResult!!.layoutManager = layoutManager
             rvSearchResult!!.adapter = adapter
             progressDialog!!.visibility = View.GONE
         }
-    }
+    }*/
 }
