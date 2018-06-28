@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity(), SearchClickListener {
     private val PAGE_START = 1
     private var isLoading = false
     private var isLastPage = false
-    private val TOTAL_PAGES = 10
+    private val TOTAL_PAGES = 6
     private var currentPage = PAGE_START
     lateinit var adapter : SearchAdapter
 
