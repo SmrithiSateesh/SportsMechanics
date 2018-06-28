@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import com.example.smrithi.sportsmechanics.R
@@ -54,7 +55,7 @@ class SearchAdapter(val clickListener: SearchClickListener) : RecyclerView.Adapt
                 searchViewHolder.match_type.setText("Match Type: " + dataList[position].match_type_name)
                 searchViewHolder.match_year.setText("Match Year: " + dataList[position].match_year)
 
-                searchViewHolder.row.setOnClickListener(object : View.OnClickListener{
+                searchViewHolder.playVideo.setOnClickListener(object : View.OnClickListener{
                     override fun onClick(v: View?) {
                         clickListener.onClick(dataList[position])
                     }
@@ -66,20 +67,6 @@ class SearchAdapter(val clickListener: SearchClickListener) : RecyclerView.Adapt
             }
         }
     }
-    /*override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
-        holder.txtID.setText("ID: " + dataList[position].id.toString())
-        holder.striker_name.setText("Striker Name: " + dataList[position].striker_name)
-        holder.bowler_name.setText("Bowler Name: " + dataList[position].bowler_name)
-        holder.match_name.setText("Match Name: " + dataList[position].match_name)
-        holder.match_type.setText("Match Type: " + dataList[position].match_type_name)
-        holder.match_year.setText("Match Year: " + dataList[position].match_year)
-
-        holder.row.setOnClickListener(object : View.OnClickListener{
-            override fun onClick(v: View?) {
-                clickListener.onClick(dataList[position])
-            }
-        })
-    }*/
 
     override fun getItemViewType(position: Int): Int {
         return if (position == dataList.size - 1 && isLoadingAdded) LOADING else ITEM
@@ -134,6 +121,7 @@ class SearchAdapter(val clickListener: SearchClickListener) : RecyclerView.Adapt
         var match_type : TextView
         var match_year : TextView
         var row : LinearLayout
+        var playVideo : ImageView
 
 
         init {
@@ -144,6 +132,7 @@ class SearchAdapter(val clickListener: SearchClickListener) : RecyclerView.Adapt
             match_type = itemView.findViewById(R.id.txt_match_type)
             match_year = itemView.findViewById(R.id.txt_match_year)
             row = itemView.findViewById(R.id.row)
+            playVideo = itemView.findViewById(R.id.imgPlayVideo)
         }
     }
 

@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity(), SearchClickListener {
     private val PAGE_START = 1
     private var isLoading = false
     private var isLastPage = false
-    private val TOTAL_PAGES = 7
+    private val TOTAL_PAGES = 10
     private var currentPage = PAGE_START
     lateinit var adapter : SearchAdapter
 
@@ -53,6 +53,7 @@ class MainActivity : AppCompatActivity(), SearchClickListener {
                 txt_no_result.visibility = View.GONE
                 if (edtSearch!!.getText().toString().isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Enter field name to search.", Toast.LENGTH_LONG).show()
+                    txt_related_result.visibility = View.GONE
                 } else {
                     loadFirstPage()
                 }
@@ -100,11 +101,13 @@ class MainActivity : AppCompatActivity(), SearchClickListener {
                 progressDialog.setVisibility(View.GONE)
                 if(response!!.body()!!.data != null){
                     txt_no_result.visibility = View.GONE
+                    txt_related_result.visibility = View.VISIBLE
                     rvSearchResult.visibility = View.VISIBLE
-                    adapter.addAll(response!!.body()!!.getData()!!)
+                    adapter.addAll(response.body()!!.getData()!!)
                 } else {
                     progressDialog!!.visibility = View.GONE
                     txt_no_result.visibility = View.VISIBLE
+                    rvSearchResult.visibility = View.GONE
                     rvSearchResult.visibility = View.GONE
                 }
                 if (currentPage <= TOTAL_PAGES)
@@ -128,7 +131,7 @@ class MainActivity : AppCompatActivity(), SearchClickListener {
                 adapter.removeLoadingFooter()
                 isLoading = false
 
-                adapter.addAll(response!!.body()!!.getData()!!)
+                adapter.addAll(response.body()!!.getData()!!)
 
                 if (currentPage !== TOTAL_PAGES)
                     adapter.addLoadingFooter()
@@ -139,48 +142,7 @@ class MainActivity : AppCompatActivity(), SearchClickListener {
 
             override fun onFailure(call: Call<SearchList>, t: Throwable) {
                 t.printStackTrace()
-                // TODO: 08/11/16 handle failure
             }
         })
     }
-
-/*    private fun loadSearchResults(page_no: Int) {
-        val retrofitInstance = RetrofitInstance()
-        val service = retrofitInstance.getRetrofitInstance().create(GetSearchDataService::class.java)
-
-        progressDialog!!.visibility = View.VISIBLE
-        val call = service.createSearchResquest(edtSearch.text.toString(), page_no, 10)
-        call.enqueue(object : Callback<SearchList>{
-            override fun onFailure(call: Call<SearchList>?, t: Throwable?) {
-                Toast.makeText(this@MainActivity, "Something went wrong. Please try later!", Toast.LENGTH_SHORT).show()
-                progressDialog!!.visibility = View.GONE
-                txt_no_result.visibility = View.GONE
-            }
-
-            override fun onResponse(call: Call<SearchList>?, response: Response<SearchList>?) {
-                if(response!!.body()!!.data != null){
-
-                    generateSearchList(response.body()!!.getData()!!)
-                } else {
-                    progressDialog!!.visibility = View.GONE
-                    txt_no_result.visibility = View.VISIBLE
-                    rvSearchResult.visibility = View.GONE
-                }
-            }
-        })
-    }
-
-    private fun generateSearchList(searchDataList: List<SearchResponse>) {
-        if (searchDataList.isEmpty()) {
-            Toast.makeText(getApplicationContext(), "No results found.", Toast.LENGTH_LONG).show()
-        } else {
-            rvSearchResult.visibility = View.VISIBLE
-            txt_no_result.visibility = View.GONE
-            val adapter = SearchAdapter(searchDataList, this)
-            val layoutManager = LinearLayoutManager(this@MainActivity)
-            rvSearchResult!!.layoutManager = layoutManager
-            rvSearchResult!!.adapter = adapter
-            progressDialog!!.visibility = View.GONE
-        }
-    }*/
 }
