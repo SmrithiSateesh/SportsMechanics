@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity(), SearchClickListener {
     private val PAGE_START = 1
     private var isLoading = false
     private var isLastPage = false
-    private val TOTAL_PAGES = 6
+    private var TOTAL_PAGES = 0
     private var currentPage = PAGE_START
     lateinit var adapter : SearchAdapter
 
@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity(), SearchClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        adapter = SearchAdapter(this)
+        adapter = SearchAdapter(this, edtSearch!!.getText().toString())
 
         progressDialog!!.visibility = View.GONE
 
@@ -51,6 +51,7 @@ class MainActivity : AppCompatActivity(), SearchClickListener {
                 adapter.clearAll()
                 adapter.notifyDataSetChanged()
                 txt_no_result.visibility = View.GONE
+                txt_related_result.visibility = View.GONE
                 if (edtSearch!!.getText().toString().isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Enter field name to search.", Toast.LENGTH_LONG).show()
                     txt_related_result.visibility = View.GONE
@@ -66,7 +67,7 @@ class MainActivity : AppCompatActivity(), SearchClickListener {
             override fun loadMoreItems() {
                 isLoading = true
                 currentPage += 1
-                Handler().postDelayed(Runnable { loadNextPage() }, 1000)
+                loadNextPage()
             }
 
             override fun getTotalPageCount(): Int {
@@ -88,7 +89,7 @@ class MainActivity : AppCompatActivity(), SearchClickListener {
         progressDialog!!.visibility = View.VISIBLE
         val retrofitInstance = RetrofitInstance()
         val service = retrofitInstance.getRetrofitInstance().create(GetSearchDataService::class.java)
-        val call = service.createSearchResquest(edtSearch.text.toString(), currentPage, 10)
+        val call = service.createSearchResquest(edtSearch.text.toString(), currentPage)
 
         call.enqueue(object : Callback<SearchList>{
             override fun onFailure(call: Call<SearchList>?, t: Throwable?) {
@@ -102,8 +103,10 @@ class MainActivity : AppCompatActivity(), SearchClickListener {
                 if(response!!.body()!!.data != null){
                     txt_no_result.visibility = View.GONE
                     txt_related_result.visibility = View.VISIBLE
+                    txt_related_result.text = "Total related videos: " + response.body()!!.total_count
                     rvSearchResult.visibility = View.VISIBLE
                     adapter.addAll(response.body()!!.getData()!!)
+                    TOTAL_PAGES = response.body()!!.total_pages
                 } else {
                     progressDialog!!.visibility = View.GONE
                     txt_no_result.visibility = View.VISIBLE
@@ -124,7 +127,7 @@ class MainActivity : AppCompatActivity(), SearchClickListener {
 
         val retrofitInstance = RetrofitInstance()
         val service = retrofitInstance.getRetrofitInstance().create(GetSearchDataService::class.java)
-        val call = service.createSearchResquest(edtSearch.text.toString(), currentPage, 10)
+        val call = service.createSearchResquest(edtSearch.text.toString(), currentPage)
 
         call.enqueue(object : Callback<SearchList> {
             override fun onResponse(call: Call<SearchList>, response: Response<SearchList>) {

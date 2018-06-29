@@ -3,4 +3,5 @@
 
     <string name="no_results_found">No results found.</string>
     <string name="related_results">Related videos.</string>
+    <string name="video_search">Video Search</string>
 </resources>

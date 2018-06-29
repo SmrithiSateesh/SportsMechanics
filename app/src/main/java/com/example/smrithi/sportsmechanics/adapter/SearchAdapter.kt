@@ -15,9 +15,7 @@ import com.example.smrithi.sportsmechanics.model.SearchResponse
 
 
 @SuppressLint("SetTextI18n")
-class SearchAdapter(val clickListener: SearchClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-
+class SearchAdapter(val clickListener: SearchClickListener, val key: String) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val dataList = ArrayList<SearchResponse>()
     private var isLoadingAdded = false
@@ -48,12 +46,9 @@ class SearchAdapter(val clickListener: SearchClickListener) : RecyclerView.Adapt
         when (getItemViewType(position)) {
             ITEM -> {
                 val searchViewHolder = holder as SearchViewHolder
-                searchViewHolder.txtID.setText("ID: " + dataList[position].id.toString())
-                searchViewHolder.striker_name.setText("Striker Name: " + dataList[position].striker_name)
-                searchViewHolder.bowler_name.setText("Bowler Name: " + dataList[position].bowler_name)
-                searchViewHolder.match_name.setText("Match Name: " + dataList[position].match_name)
-                searchViewHolder.match_type.setText("Match Type: " + dataList[position].match_type_name)
-                searchViewHolder.match_year.setText("Match Year: " + dataList[position].match_year)
+                searchViewHolder.key.setText(dataList[position].striker_name + " " + dataList[position].match_name)
+                searchViewHolder.match_year.setText(dataList[position].match_year)
+                searchViewHolder.match_date.setText(dataList[position].match_date)
 
                 searchViewHolder.playVideo.setOnClickListener(object : View.OnClickListener{
                     override fun onClick(v: View?) {
@@ -114,25 +109,17 @@ class SearchAdapter(val clickListener: SearchClickListener) : RecyclerView.Adapt
 
     inner class SearchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        var txtID: TextView
-        var striker_name: TextView
-        var bowler_name : TextView
-        var match_name : TextView
-        var match_type : TextView
+        var key: TextView
         var match_year : TextView
-        var row : LinearLayout
         var playVideo : ImageView
+        var match_date : TextView
 
 
         init {
-            txtID = itemView.findViewById(R.id.txt_id)
-            striker_name = itemView.findViewById(R.id.striker_name)
-            bowler_name = itemView.findViewById(R.id.txt_Bowler_Name)
-            match_name = itemView.findViewById(R.id.txt_match_name)
-            match_type = itemView.findViewById(R.id.txt_match_type)
+            key = itemView.findViewById(R.id.txt_key)
             match_year = itemView.findViewById(R.id.txt_match_year)
-            row = itemView.findViewById(R.id.row)
             playVideo = itemView.findViewById(R.id.imgPlayVideo)
+            match_date = itemView.findViewById(R.id.txt_match_date)
         }
     }
 

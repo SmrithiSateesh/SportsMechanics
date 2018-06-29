@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/colorWhite">
 
  <android.support.design.widget.AppBarLayout
      android:id="@+id/toolbarProfileLayout"
@@ -28,10 +29,9 @@
        android:layout_width="0dp"
        android:layout_height="wrap_content"
        android:id="@+id/edtSearch"
-       android:hint="Search"
+       android:hint="@string/video_search"
        android:layout_weight="5"
        android:background="@color/transparent"
-       tools:ignore="HardcodedText"
        android:inputType="textCapWords"
        android:textColor="@color/colorWhite"
        android:textColorHint="@color/colorWhite"
@@ -79,6 +79,7 @@
      android:layout_height="wrap_content"
      android:layout_gravity="center_horizontal"
      android:id="@+id/progressDialog"
-     android:padding="5dp"/>
+     android:padding="5dp"
+     android:indeterminateTint="@color/orange"/>
 
 </LinearLayout>

@@ -38,6 +38,15 @@ public class SearchResponse {
     private int no_ball;
     private String video_file;
     private String video_location;
+    private String match_date;
+
+    public String getMatch_date() {
+        return match_date;
+    }
+
+    public void setMatch_date(String match_date) {
+        this.match_date = match_date;
+    }
 
     public int getId() {
         return id;

@@ -7,6 +7,8 @@ public class SearchList {
 
     private int total_count;
     private int page;
+    private int total_pages;
+
     private List<SearchResponse> data;
 
     public int getTotal_count() {
@@ -23,6 +25,14 @@ public class SearchList {
 
     public void setPage(int page) {
         this.page = page;
+    }
+
+    public int getTotal_pages() {
+        return total_pages;
+    }
+
+    public void setTotal_pages(int total_pages) {
+        this.total_pages = total_pages;
     }
 
     public List<SearchResponse> getData() {
