@@ -3,6 +3,7 @@ package com.example.smrithi.sportsmechanics.adapter
 import android.annotation.SuppressLint
 import android.widget.TextView
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -88,15 +89,14 @@ class SearchAdapter(val clickListener: SearchClickListener, val key: String) : R
     }
 
     fun removeLoadingFooter() {
-        isLoadingAdded = false
-
-        val position = dataList.size - 1
-        val result = getItem(position)
-
-        if (result != null) {
+        Log.d("PAGE ", " removeLoadingFooter")
+        if( isLoadingAdded ) {
+            isLoadingAdded = false
+            val position = dataList.size - 1
             dataList.removeAt(position)
             notifyItemRemoved(position)
         }
+
     }
 
     fun clearAll(){

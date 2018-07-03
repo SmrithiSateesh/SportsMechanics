@@ -2,6 +2,7 @@ package com.example.smrithi.sportsmechanics.util
 
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 
 
 abstract class PaginationScrollListener

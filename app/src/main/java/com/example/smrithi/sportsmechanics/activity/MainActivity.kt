@@ -5,23 +5,21 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.widget.Toast
-import com.example.basavaraj.sportsmechanics.network.GetSearchDataService
-import com.example.basavaraj.sportsmechanics.network.RetrofitInstance
 import com.example.smrithi.sportsmechanics.R
 import com.example.smrithi.sportsmechanics.adapter.SearchAdapter
 import com.example.smrithi.sportsmechanics.interfaces.SearchClickListener
 import com.example.smrithi.sportsmechanics.model.SearchList
 import com.example.smrithi.sportsmechanics.model.SearchResponse
-import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.Response
 import kotlinx.android.synthetic.main.activity_main.*
 import android.content.Intent
-import android.os.Handler
+import android.util.Log
+import com.example.smrithi.sportsmechanics.interfaces.ResponseInterface
 import com.example.smrithi.sportsmechanics.util.PaginationScrollListener
 
 
-class MainActivity : AppCompatActivity(), SearchClickListener {
+class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface {
+
     override fun onClick(dataList: SearchResponse) {
 
         val intent = Intent(this@MainActivity, WebViewActivity::class.java)
@@ -35,11 +33,13 @@ class MainActivity : AppCompatActivity(), SearchClickListener {
     private var TOTAL_PAGES = 0
     private var currentPage = PAGE_START
     lateinit var adapter : SearchAdapter
+    private var mPresenter: MainActivityPresenter ?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        mPresenter = MainActivityPresenter()
         adapter = SearchAdapter(this, edtSearch!!.getText().toString())
 
         progressDialog!!.visibility = View.GONE
@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity(), SearchClickListener {
                     Toast.makeText(getApplicationContext(), "Enter field name to search.", Toast.LENGTH_LONG).show()
                     txt_related_result.visibility = View.GONE
                 } else {
+                    currentPage = 1
                     loadFirstPage()
                 }
             }
@@ -65,9 +66,16 @@ class MainActivity : AppCompatActivity(), SearchClickListener {
         rvSearchResult.setAdapter(adapter)
         rvSearchResult.addOnScrollListener(object : PaginationScrollListener(linearLayoutManager){
             override fun loadMoreItems() {
+                progressDialog!!.visibility = View.GONE
+                Log.d("PAGE "," loadMoreItems()")
                 isLoading = true
                 currentPage += 1
-                loadNextPage()
+                if(TOTAL_PAGES >= currentPage) {
+                    Log.d("PAGE "," loadNextPage()")
+                    loadNextPage()
+                } else {
+                    adapter.removeLoadingFooter()
+                }
             }
 
             override fun getTotalPageCount(): Int {
@@ -86,66 +94,65 @@ class MainActivity : AppCompatActivity(), SearchClickListener {
     }
 
     private fun loadFirstPage() {
-        progressDialog!!.visibility = View.VISIBLE
-        val retrofitInstance = RetrofitInstance()
-        val service = retrofitInstance.getRetrofitInstance().create(GetSearchDataService::class.java)
-        val call = service.createSearchResquest(edtSearch.text.toString(), currentPage)
-
-        call.enqueue(object : Callback<SearchList>{
-            override fun onFailure(call: Call<SearchList>?, t: Throwable?) {
-                Toast.makeText(this@MainActivity, "Something went wrong. Please try later!", Toast.LENGTH_SHORT).show()
-                progressDialog!!.visibility = View.GONE
-                txt_no_result.visibility = View.GONE
-            }
-
-            override fun onResponse(call: Call<SearchList>?, response: Response<SearchList>?) {
-                progressDialog.setVisibility(View.GONE)
-                if(response!!.body()!!.data != null){
-                    txt_no_result.visibility = View.GONE
-                    txt_related_result.visibility = View.VISIBLE
-                    txt_related_result.text = "Total related videos: " + response.body()!!.total_count
-                    rvSearchResult.visibility = View.VISIBLE
-                    adapter.addAll(response.body()!!.getData()!!)
-                    TOTAL_PAGES = response.body()!!.total_pages
-                } else {
-                    progressDialog!!.visibility = View.GONE
-                    txt_no_result.visibility = View.VISIBLE
-                    rvSearchResult.visibility = View.GONE
-                    rvSearchResult.visibility = View.GONE
-                }
-                if (currentPage <= TOTAL_PAGES)
-                    adapter.addLoadingFooter()
-                else
-                    isLastPage = true
-            }
-
-        })
+        progressDialog.visibility = View.VISIBLE
+        mPresenter!!.loadFirstPage(edtSearch.text.toString(), currentPage, true,this)
     }
 
     private fun loadNextPage() {
-        progressDialog!!.visibility = View.VISIBLE
 
-        val retrofitInstance = RetrofitInstance()
-        val service = retrofitInstance.getRetrofitInstance().create(GetSearchDataService::class.java)
-        val call = service.createSearchResquest(edtSearch.text.toString(), currentPage)
+        progressDialog.visibility = View.VISIBLE
+        mPresenter!!.loadFirstPage(edtSearch.text.toString(), currentPage, false, this)
+    }
 
-        call.enqueue(object : Callback<SearchList> {
-            override fun onResponse(call: Call<SearchList>, response: Response<SearchList>) {
-                adapter.removeLoadingFooter()
-                isLoading = false
-
+    override fun onSuccess(response: Response<SearchList>?, firstQuery: Boolean) {
+        if(firstQuery) {
+            if(response!!.body()!!.data != null){
+                TOTAL_PAGES = response.body()!!.total_pages
+                txt_no_result.visibility = View.GONE
+                txt_related_result.visibility = View.VISIBLE
+                txt_related_result.text = "Total related videos: " + response.body()!!.total_count
+                rvSearchResult.visibility = View.VISIBLE
                 adapter.addAll(response.body()!!.getData()!!)
-
-                if (currentPage !== TOTAL_PAGES)
-                    adapter.addLoadingFooter()
-                else
-                    isLastPage = true
+                Log.d("PAGE "," first response")
                 progressDialog!!.visibility = View.GONE
+            } else {
+                progressDialog!!.visibility = View.GONE
+                txt_no_result.visibility = View.VISIBLE
+                rvSearchResult.visibility = View.GONE
+                rvSearchResult.visibility = View.GONE
             }
+            if (currentPage <= TOTAL_PAGES) {
+                adapter.removeLoadingFooter()
+                progressDialog!!.visibility = View.GONE
+                isLoading = false
+                Log.d("PAGE "," current <= total")
+            }
+            else {
+                isLastPage = true
+            }
+        } else {
+            adapter.removeLoadingFooter()
+            isLoading = false
 
-            override fun onFailure(call: Call<SearchList>, t: Throwable) {
-                t.printStackTrace()
-            }
-        })
+            adapter.addAll(response?.body()!!.getData()!!)
+
+            if (currentPage !== TOTAL_PAGES)
+                adapter.addLoadingFooter()
+            else
+                isLastPage = true
+            progressDialog!!.visibility = View.GONE
+        }
+
+    }
+
+    override fun onFailure(t: Throwable?, firstQuery: Boolean) {
+        if(firstQuery) {
+            Toast.makeText(this@MainActivity, "Something went wrong. Please try later!", Toast.LENGTH_SHORT).show()
+            progressDialog!!.visibility = View.GONE
+            txt_no_result.visibility = View.GONE
+        } else {
+            t?.printStackTrace()
+        }
+
     }
 }
