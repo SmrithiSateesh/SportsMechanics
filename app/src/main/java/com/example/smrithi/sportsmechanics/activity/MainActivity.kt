@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import android.content.Intent
 import android.util.Log
 import com.example.smrithi.sportsmechanics.interfaces.ResponseInterface
-import com.example.smrithi.sportsmechanics.util.PaginationScrollListener
+import com.example.smrithi.sportsmechanics.utils.PaginationScrollListener
 
 class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface {
 
