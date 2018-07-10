@@ -18,11 +18,9 @@ import android.util.Log
 import com.example.smrithi.sportsmechanics.interfaces.ResponseInterface
 import com.example.smrithi.sportsmechanics.util.PaginationScrollListener
 
-
 class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface {
 
     override fun onClick(dataList: SearchResponse) {
-
         val intent = Intent(this@MainActivity, WebViewActivity::class.java)
         intent.putExtra("videoPath", dataList.video_location)
         startActivity(intent)
@@ -92,7 +90,6 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
             override fun isLoading(): Boolean {
                 return isLoading
             }
-
         })
     }
 
