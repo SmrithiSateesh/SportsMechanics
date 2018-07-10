@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
         setContentView(R.layout.activity_main)
 
         mPresenter = MainActivityPresenter()
-        adapter = SearchAdapter(this, edtSearch!!.getText().toString())
+        adapter = SearchAdapter(this)
 
         progressDialog!!.visibility = View.GONE
 

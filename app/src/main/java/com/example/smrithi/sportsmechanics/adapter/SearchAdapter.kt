@@ -16,7 +16,7 @@ import com.example.smrithi.sportsmechanics.model.SearchResponse
 
 
 @SuppressLint("SetTextI18n")
-class SearchAdapter(val clickListener: SearchClickListener, val key: String) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class SearchAdapter(val clickListener: SearchClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val dataList = ArrayList<SearchResponse>()
     private var isLoadingAdded = false
@@ -47,13 +47,13 @@ class SearchAdapter(val clickListener: SearchClickListener, val key: String) : R
         when (getItemViewType(position)) {
             ITEM -> {
                 val searchViewHolder = holder as SearchViewHolder
-                searchViewHolder.key.setText(dataList[position].striker_name + " " + dataList[position].match_name)
-                searchViewHolder.match_year.setText(dataList[position].match_year)
-                searchViewHolder.match_date.setText(dataList[position].match_date)
+                searchViewHolder.key.setText(dataList[holder.adapterPosition].striker_name + " " + dataList[position].match_name)
+                searchViewHolder.match_year.setText(dataList[holder.adapterPosition].match_year)
+                searchViewHolder.match_date.setText(dataList[holder.adapterPosition].match_date)
 
                 searchViewHolder.playVideo.setOnClickListener(object : View.OnClickListener{
                     override fun onClick(v: View?) {
-                        clickListener.onClick(dataList[position])
+                        clickListener.onClick(dataList[holder.adapterPosition])
                     }
                 })
             }
