@@ -1,11 +1,10 @@
-package com.example.basavaraj.sportsmechanics.network
+package com.example.smrithi.sportsmechanics.network
 
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.Retrofit
 
 class RetrofitInstance {
     var retrofit: Retrofit? = null
-   // private val BASE_URL = "http://www.mocky.io/v2/"
     private val BASE_URL = "https://sportsmechanics.herokuapp.com/"
 
     fun getRetrofitInstance(): Retrofit {

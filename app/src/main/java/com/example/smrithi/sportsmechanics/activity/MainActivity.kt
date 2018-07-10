@@ -1,5 +1,6 @@
 package com.example.smrithi.sportsmechanics.activity
 
+import android.annotation.SuppressLint
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -70,6 +71,8 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
                 Log.d("PAGE "," loadMoreItems()")
                 isLoading = true
                 currentPage += 1
+                Log.d("Total_page", TOTAL_PAGES.toString())
+                Log.d("current_page", currentPage.toString())
                 if(TOTAL_PAGES >= currentPage) {
                     Log.d("PAGE "," loadNextPage()")
                     loadNextPage()
@@ -95,15 +98,15 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
 
     private fun loadFirstPage() {
         progressDialog.visibility = View.VISIBLE
-        mPresenter!!.loadFirstPage(edtSearch.text.toString(), currentPage, true,this)
+        mPresenter!!.loadSearchResult(edtSearch.text.toString(), currentPage, true,this)
     }
 
     private fun loadNextPage() {
-
         progressDialog.visibility = View.VISIBLE
-        mPresenter!!.loadFirstPage(edtSearch.text.toString(), currentPage, false, this)
+        mPresenter!!.loadSearchResult(edtSearch.text.toString(), currentPage, false, this)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onSuccess(response: Response<SearchList>?, firstQuery: Boolean) {
         if(firstQuery) {
             if(response!!.body()!!.data != null){
@@ -136,7 +139,7 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
 
             adapter.addAll(response?.body()!!.getData()!!)
 
-            if (currentPage !== TOTAL_PAGES)
+            if (currentPage != TOTAL_PAGES)
                 adapter.addLoadingFooter()
             else
                 isLastPage = true
@@ -153,6 +156,5 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
         } else {
             t?.printStackTrace()
         }
-
     }
 }
