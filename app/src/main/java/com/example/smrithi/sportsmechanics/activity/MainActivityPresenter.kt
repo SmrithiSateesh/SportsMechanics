@@ -33,7 +33,6 @@ class MainActivityPresenter {
 
                 })
             }
-
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
     }
 }
