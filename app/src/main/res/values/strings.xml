@@ -11,4 +11,8 @@
     <string name="general_search">General Search</string>
     <string name="match_type">Match Type</string>
     <string name="search">Search</string>
+
+    <string name="ipl">IPL</string>
+    <string name="odi">ODI</string>
+    <string name="multi_days">MULTI DAYS</string>
 </resources>

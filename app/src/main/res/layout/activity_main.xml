@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -88,4 +87,201 @@
      android:indeterminateTint="@color/orange"/>
 
 </LinearLayout>
+
+ <android.support.design.widget.CoordinatorLayout
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     android:id="@+id/searchDialog"
+     android:visibility="gone">
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:background="@color/colorWhite">
+
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="?attr/actionBarSize"
+      android:background="@color/colorWhite">
+   <ImageView
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:src="@drawable/ic_backspace"
+       android:id="@+id/ivBack"
+       android:padding="@dimen/default_margin"/>
+
+   <TextView
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="@string/video_search"
+       android:layout_toRightOf="@+id/ivBack"
+       android:layout_toEndOf="@+id/ivBack"
+       android:padding="@dimen/default_margin"/>
+  </RelativeLayout>
+
+
+   <View
+       android:layout_width="match_parent"
+       android:layout_height="@dimen/divider_height"
+       android:background="@color/grey"/>
+   <TextView
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:text="@string/batsman"
+       android:layout_margin="@dimen/margin_15"/>
+
+   <EditText
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:id="@+id/etBatsman"
+       android:layout_marginLeft="@dimen/margin_15"
+       android:layout_marginRight="@dimen/margin_15"
+       android:layout_marginBottom="@dimen/margin_15"
+       android:hint="@string/batsman"
+       android:background="@null"
+       android:textSize="@dimen/text_16"/>
+
+   <View
+       android:layout_width="match_parent"
+       android:layout_height="@dimen/divider_height"
+       android:layout_marginLeft="@dimen/margin_15"
+       android:layout_marginRight="@dimen/margin_15"
+       android:background="@color/grey"/>
+
+   <TextView
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:text="@string/bowler"
+       android:layout_margin="@dimen/margin_15"/>
+
+   <EditText
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:id="@+id/etBowler"
+       android:layout_marginLeft="@dimen/margin_15"
+       android:layout_marginRight="@dimen/margin_15"
+       android:layout_marginBottom="@dimen/margin_15"
+       android:hint="@string/bowler"
+       android:background="@null"
+       android:textSize="@dimen/text_16"/>
+
+   <View
+       android:layout_width="match_parent"
+       android:layout_height="@dimen/divider_height"
+       android:layout_marginLeft="@dimen/margin_15"
+       android:layout_marginRight="@dimen/margin_15"
+       android:background="@color/grey"/>
+
+   <TextView
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:text="@string/fielder"
+       android:layout_margin="@dimen/margin_15"/>
+
+   <EditText
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:id="@+id/etFielder"
+       android:layout_marginLeft="@dimen/margin_15"
+       android:layout_marginRight="@dimen/margin_15"
+       android:layout_marginBottom="@dimen/margin_15"
+       android:hint="@string/fielder"
+       android:background="@null"
+       android:textSize="@dimen/text_16"/>
+
+   <View
+       android:layout_width="match_parent"
+       android:layout_height="@dimen/divider_height"
+       android:layout_marginLeft="@dimen/margin_15"
+       android:layout_marginRight="@dimen/margin_15"
+       android:background="@color/grey"/>
+
+   <TextView
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:text="@string/general_search"
+       android:layout_margin="@dimen/margin_15"/>
+
+   <EditText
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:id="@+id/etGeneralSearch"
+       android:layout_marginLeft="@dimen/margin_15"
+       android:layout_marginRight="@dimen/margin_15"
+       android:layout_marginBottom="@dimen/margin_15"
+       android:hint="@string/general_search"
+       android:background="@null"
+       android:textSize="@dimen/text_16"/>
+
+   <View
+       android:layout_width="match_parent"
+       android:layout_height="@dimen/divider_height"
+       android:layout_marginLeft="@dimen/margin_15"
+       android:layout_marginRight="@dimen/margin_15"
+       android:background="@color/grey"/>
+
+   <TextView
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:text="@string/match_type"
+       android:layout_margin="@dimen/margin_15"/>
+
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="horizontal"
+       android:weightSum="3"
+       android:id="@+id/radioMatchType">
+    <CheckBox
+        android:id="@+id/radioIPL"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_radio"
+        android:button="@android:color/transparent"
+        android:text="@string/ipl"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:padding="@dimen/default_mini_padding"
+        android:layout_margin="@dimen/default_margin"/>
+    <CheckBox
+        android:id="@+id/radioODI"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_radio"
+        android:button="@android:color/transparent"
+        android:text="@string/odi"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:padding="@dimen/default_mini_padding"
+        android:layout_margin="@dimen/default_margin"
+        />
+
+    <CheckBox
+        android:id="@+id/radiMultiDay"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_radio"
+        android:button="@android:color/transparent"
+        android:text="@string/multi_days"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:padding="@dimen/default_mini_padding"
+        android:layout_margin="@dimen/default_margin"/>
+   </LinearLayout>
+
+   <Button
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:id="@+id/btnSearch"
+       android:background="@drawable/search_button_background"
+       android:text="@string/search"
+       android:textColor="@color/colorWhite"
+       android:layout_gravity="center_horizontal"
+       android:padding="@dimen/default_mini_padding"
+       android:layout_marginRight="@dimen/margin_40"
+       android:layout_marginLeft="@dimen/margin_40"
+       android:stateListAnimator="@null"/>
+  </LinearLayout>
+ </android.support.design.widget.CoordinatorLayout>
 </RelativeLayout>

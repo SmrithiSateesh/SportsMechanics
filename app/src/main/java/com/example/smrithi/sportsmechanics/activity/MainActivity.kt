@@ -47,6 +47,12 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
 
         imgSearch.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
+                searchDialog.visibility = View.VISIBLE
+            }
+        })
+
+        btnSearch.setOnClickListener{
+                searchDialog.visibility = View.GONE
                 adapter.clearAll()
                 adapter.notifyDataSetChanged()
                 txt_no_result.visibility = View.GONE
@@ -59,8 +65,10 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
                     loadFirstPage()
                 }
             }
-        })
 
+        ivBack.setOnClickListener{
+            searchDialog.visibility = View.GONE
+        }
         rvSearchResult.setLayoutManager(linearLayoutManager)
         rvSearchResult.setAdapter(adapter)
         rvSearchResult.addOnScrollListener(object : PaginationScrollListener(linearLayoutManager){
