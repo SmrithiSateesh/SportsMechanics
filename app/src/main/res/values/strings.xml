@@ -4,4 +4,11 @@
     <string name="no_results_found">No results found.</string>
     <string name="related_results">Related videos.</string>
     <string name="video_search">Video Search</string>
+    
+    <string name="batsman">Batsman</string>
+    <string name="bowler">Bowler</string>
+    <string name="fielder">Fielder</string>
+    <string name="general_search">General Search</string>
+    <string name="match_type">Match Type</string>
+    <string name="search">Search</string>
 </resources>
