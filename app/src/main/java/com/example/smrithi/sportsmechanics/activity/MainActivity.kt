@@ -1,6 +1,7 @@
 package com.example.smrithi.sportsmechanics.activity
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -14,13 +15,17 @@ import com.example.smrithi.sportsmechanics.model.SearchResponse
 import retrofit2.Response
 import kotlinx.android.synthetic.main.activity_main.*
 import android.content.Intent
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import com.example.smrithi.sportsmechanics.interfaces.ResponseInterface
-import com.example.smrithi.sportsmechanics.model.SearchPlayerResponse
 import com.example.smrithi.sportsmechanics.utils.PaginationScrollListener
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
+import android.widget.ArrayAdapter
+import android.widget.ListView
+import com.example.smrithi.sportsmechanics.model.SearchPlayerResponse
 
 class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface {
 
@@ -43,6 +48,25 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val watcher = object : TextWatcher {
+
+            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+
+            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
+                layoutMatchType.visibility = View.VISIBLE
+                txtMatchType.visibility = View.VISIBLE
+            }
+
+            override fun afterTextChanged(editable: Editable) {
+
+            }
+        }
+
+        etBatsman.addTextChangedListener(watcher)
+        etBowler.addTextChangedListener(watcher)
+        etFielder.addTextChangedListener(watcher)
+        etGeneralSearch.addTextChangedListener(watcher)
 
         val matchType = ArrayList<String>()
 
@@ -127,12 +151,25 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
         initRxObservable_Batsman()
         initRxObservable_Bowler()
         initRxObservable_Fielder()
+
+        etBatsman.setOnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus) {
+                spinnerBatsman.visibility = View.GONE }
+        }
+        etBowler.setOnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus) {
+                spinnerBowler.visibility = View.GONE }
+        }
+        etFielder.setOnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus) {
+                spinnerFielder.visibility = View.GONE }
+        }
     }
 
     private fun initRxObservable_Batsman() { //debounce for 1sec
 
         RxSearchObservable.fromView(etBatsman)
-                .debounce(400, TimeUnit.MILLISECONDS) // -> 1 second
+                .debounce(300, TimeUnit.MILLISECONDS) // -> 1 second
                 .filter { text -> !text.isEmpty() }
                 .distinctUntilChanged()
                 .subscribeOn(Schedulers.io())
@@ -145,7 +182,7 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
     private fun initRxObservable_Bowler() { //debounce for 1sec
 
         RxSearchObservable.fromView(etBowler)
-                .debounce(400, TimeUnit.MILLISECONDS) // -> 1 second
+                .debounce(300, TimeUnit.MILLISECONDS) // -> 1 second
                 .filter { text -> !text.isEmpty() }
                 .distinctUntilChanged()
                 .subscribeOn(Schedulers.io())
@@ -158,7 +195,7 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
     private fun initRxObservable_Fielder() { //debounce for 1sec
 
         RxSearchObservable.fromView(etFielder)
-                .debounce(400, TimeUnit.MILLISECONDS) // -> 1 second
+                .debounce(300, TimeUnit.MILLISECONDS) // -> 1 second
                 .filter { text -> !text.isEmpty() }
                 .distinctUntilChanged()
                 .subscribeOn(Schedulers.io())
@@ -234,21 +271,51 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
     }
 
     override fun onSuccess_SearchPlayer(response: Response<SearchPlayerResponse>?, field_name: String) {
-        Toast.makeText(applicationContext, "Success", Toast.LENGTH_SHORT).show()
+       // Toast.makeText(applicationContext, "Success", Toast.LENGTH_SHORT).show()
        when(field_name){
            "striker_name" -> {
-
+               spinnerBatsman.visibility = View.VISIBLE
+               showListInSpinner(spinnerBatsman, response)
            }
            "bowler_name" -> {
-
+               spinnerBowler.visibility = View.VISIBLE
+               showListInSpinner(spinnerBowler, response)
            }
            "fielder_name" -> {
-
+               spinnerFielder.visibility = View.VISIBLE
+               showListInSpinner(spinnerFielder, response)
            }
        }
     }
 
     override fun onFailure_SearchPlayer(t: Throwable?) {
 
+    }
+
+    private fun showListInSpinner(listView: ListView, response: Response<SearchPlayerResponse>?) {
+        val items = arrayOfNulls<String>(response!!.body()!!.data.total_count)
+
+        for (i in 0 until response!!.body()!!.data.total_count) {
+            //Storing names to string array
+            items[i] = response!!.body()!!.data.names[i];
+        }
+        val adapter: ArrayAdapter<String>
+        adapter = ArrayAdapter<String>(applicationContext, android.R.layout.simple_list_item_1, items)
+        listView.setAdapter(adapter)
+
+        listView.setOnItemClickListener { parent, view, position, id ->
+            if (spinnerBatsman.visibility == View.VISIBLE){
+                etBatsman.setText(items[position])
+                spinnerBatsman.visibility = View.GONE
+            }
+            if (spinnerBowler.visibility == View.VISIBLE){
+                etBowler.setText(items[position])
+                spinnerBowler.visibility = View.GONE
+            }
+            if (spinnerFielder.visibility == View.VISIBLE){
+                etFielder.setText(items[position])
+                spinnerFielder.visibility = View.GONE
+            }
+        }
     }
 }

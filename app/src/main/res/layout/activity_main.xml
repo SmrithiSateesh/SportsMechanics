@@ -90,9 +90,10 @@
 
  <android.support.design.widget.CoordinatorLayout
      android:layout_width="match_parent"
-     android:layout_height="wrap_content"
+     android:layout_height="match_parent"
      android:id="@+id/searchDialog"
-     android:visibility="gone">
+     android:visibility="gone"
+     android:background="@color/colorWhite">
 
   <LinearLayout
       android:layout_width="match_parent"
@@ -131,6 +132,10 @@
        android:text="@string/batsman"
        android:layout_margin="@dimen/margin_15"/>
 
+   <RelativeLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content">
+
    <EditText
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
@@ -140,8 +145,17 @@
        android:layout_marginBottom="@dimen/margin_15"
        android:hint="@string/batsman"
        android:background="@null"
-       android:textSize="@dimen/text_16"/>
-
+       android:textSize="@dimen/text_16"
+       android:inputType="textCapWords"/>
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinnerBatsman"
+        android:layout_below="@id/etBatsman"
+        android:layout_marginLeft="@dimen/margin_10"
+        android:layout_marginStart="@dimen/margin_10"
+        android:visibility="gone"/>
+   </RelativeLayout>
    <View
        android:layout_width="match_parent"
        android:layout_height="@dimen/divider_height"
@@ -155,6 +169,10 @@
        android:text="@string/bowler"
        android:layout_margin="@dimen/margin_15"/>
 
+   <RelativeLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content">
+
    <EditText
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
@@ -166,8 +184,18 @@
        android:background="@null"
        android:textSize="@dimen/text_16"
        android:iconifiedByDefault="false"
-       />
+       android:inputType="textCapWords"/>
 
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinnerBowler"
+        android:layout_below="@id/etBowler"
+        android:layout_marginLeft="@dimen/margin_10"
+        android:layout_marginStart="@dimen/margin_10"
+        android:visibility="gone"/>
+
+   </RelativeLayout>
    <View
        android:layout_width="match_parent"
        android:layout_height="@dimen/divider_height"
@@ -181,6 +209,9 @@
        android:text="@string/fielder"
        android:layout_margin="@dimen/margin_15"/>
 
+   <RelativeLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content">
    <EditText
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
@@ -191,8 +222,18 @@
        android:hint="@string/fielder"
        android:background="@null"
        android:textSize="@dimen/text_16"
-       android:iconifiedByDefault="false"/>
+       android:iconifiedByDefault="false"
+       android:inputType="textCapWords"/>
 
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinnerFielder"
+        android:layout_below="@id/etFielder"
+        android:layout_marginLeft="@dimen/margin_10"
+        android:layout_marginStart="@dimen/margin_10"
+        android:visibility="gone"/>
+   </RelativeLayout>
    <View
        android:layout_width="match_parent"
        android:layout_height="@dimen/divider_height"
@@ -229,14 +270,17 @@
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        android:text="@string/match_type"
-       android:layout_margin="@dimen/margin_15"/>
+       android:layout_margin="@dimen/margin_15"
+       android:visibility="gone"
+       android:id="@+id/txtMatchType"/>
 
    <LinearLayout
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        android:orientation="horizontal"
        android:weightSum="3"
-       android:id="@+id/radioMatchType">
+       android:id="@+id/layoutMatchType"
+       android:visibility="gone">
     <CheckBox
         android:id="@+id/radioIPL"
         android:layout_width="0dp"
@@ -285,7 +329,8 @@
        android:padding="@dimen/default_mini_padding"
        android:layout_marginRight="@dimen/margin_40"
        android:layout_marginLeft="@dimen/margin_40"
-       android:stateListAnimator="@null"/>
+       android:stateListAnimator="@null"
+       android:layout_marginTop="@dimen/margin_10"/>
   </LinearLayout>
  </android.support.design.widget.CoordinatorLayout>
 </RelativeLayout>
