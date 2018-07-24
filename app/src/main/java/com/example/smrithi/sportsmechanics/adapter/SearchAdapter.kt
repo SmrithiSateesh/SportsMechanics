@@ -47,9 +47,9 @@ class SearchAdapter(val clickListener: SearchClickListener) : RecyclerView.Adapt
         when (getItemViewType(position)) {
             ITEM -> {
                 val searchViewHolder = holder as SearchViewHolder
-                searchViewHolder.key.setText(dataList[holder.adapterPosition].striker_name + " " + dataList[position].match_name)
+                searchViewHolder.key.setText(dataList[holder.adapterPosition].striker_name + " " + dataList[position].competition_name)
                 searchViewHolder.match_year.setText(dataList[holder.adapterPosition].match_year)
-                searchViewHolder.match_date.setText(dataList[holder.adapterPosition].match_date)
+             //   searchViewHolder.match_date.setText(dataList[holder.adapterPosition].match_date)
 
                 searchViewHolder.playVideo.setOnClickListener(object : View.OnClickListener{
                     override fun onClick(v: View?) {

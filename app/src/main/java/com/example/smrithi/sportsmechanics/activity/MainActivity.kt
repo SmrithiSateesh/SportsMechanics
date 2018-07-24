@@ -16,9 +16,14 @@ import kotlinx.android.synthetic.main.activity_main.*
 import android.content.Intent
 import android.util.Log
 import com.example.smrithi.sportsmechanics.interfaces.ResponseInterface
+import com.example.smrithi.sportsmechanics.model.SearchPlayerResponse
 import com.example.smrithi.sportsmechanics.utils.PaginationScrollListener
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface {
+
 
     override fun onClick(dataList: SearchResponse) {
         val intent = Intent(this@MainActivity, WebViewActivity::class.java)
@@ -34,9 +39,28 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
     lateinit var adapter : SearchAdapter
     private var mPresenter: MainActivityPresenter ?= null
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val matchType = ArrayList<String>()
+
+        matchType.clear()
+        if (radioIPL.isChecked){
+            matchType.add("IPL")
+        }
+        if (radioODI.isChecked){
+            matchType.add("ODI")
+        }
+        if (radioMultiDay.isChecked){
+            matchType.add("TEST")
+        }
+
+        val arrayMatchType = arrayOf<String>()
+        for (j in 0 until matchType.size) {
+            arrayMatchType[j] = matchType.get(j)
+        }
 
         mPresenter = MainActivityPresenter()
         adapter = SearchAdapter(this)
@@ -62,7 +86,7 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
                     txt_related_result.visibility = View.GONE
                 } else {
                     currentPage = 1
-                    loadFirstPage()
+                    loadFirstPage(arrayMatchType)
                 }
             }
 
@@ -81,7 +105,7 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
                 Log.d("current_page", currentPage.toString())
                 if(TOTAL_PAGES >= currentPage) {
                     Log.d("PAGE "," loadNextPage()")
-                    loadNextPage()
+                    loadNextPage(arrayMatchType)
                 } else {
                     adapter.removeLoadingFooter()
                 }
@@ -99,16 +123,62 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
                 return isLoading
             }
         })
+
+        initRxObservable_Batsman()
+        initRxObservable_Bowler()
+        initRxObservable_Fielder()
     }
 
-    private fun loadFirstPage() {
-        progressDialog.visibility = View.VISIBLE
-        mPresenter!!.loadSearchResult(edtSearch.text.toString(), currentPage, true,this)
+    private fun initRxObservable_Batsman() { //debounce for 1sec
+
+        RxSearchObservable.fromView(etBatsman)
+                .debounce(400, TimeUnit.MILLISECONDS) // -> 1 second
+                .filter { text -> !text.isEmpty() }
+                .distinctUntilChanged()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { keyword ->
+                    mPresenter!!.loadPlayerName(etBatsman.getText().toString(), "striker_name", this)
+                }
     }
 
-    private fun loadNextPage() {
+    private fun initRxObservable_Bowler() { //debounce for 1sec
+
+        RxSearchObservable.fromView(etBowler)
+                .debounce(400, TimeUnit.MILLISECONDS) // -> 1 second
+                .filter { text -> !text.isEmpty() }
+                .distinctUntilChanged()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { keyword ->
+                    mPresenter!!.loadPlayerName(etBowler.getText().toString(), "bowler_name", this)
+                }
+    }
+
+    private fun initRxObservable_Fielder() { //debounce for 1sec
+
+        RxSearchObservable.fromView(etFielder)
+                .debounce(400, TimeUnit.MILLISECONDS) // -> 1 second
+                .filter { text -> !text.isEmpty() }
+                .distinctUntilChanged()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { keyword ->
+                    mPresenter!!.loadPlayerName(etFielder.getText().toString(), "fielder_name", this)
+                }
+    }
+
+
+    private fun loadFirstPage(arrayMatchType: Array<String>) {
+
         progressDialog.visibility = View.VISIBLE
-        mPresenter!!.loadSearchResult(edtSearch.text.toString(), currentPage, false, this)
+        mPresenter!!.loadSearchResult(etGeneralSearch.getText().toString(), etBatsman.getText().toString(), etBowler.getText().toString(), etFielder.getText().toString(), arrayMatchType , currentPage, true,this)
+    }
+
+    private fun loadNextPage(arrayMatchType: Array<String>) {
+        progressDialog.visibility = View.VISIBLE
+       // mPresenter!!.loadSearchResult(edtSearch.text.toString(), currentPage, false, this)
+        mPresenter!!.loadSearchResult(etGeneralSearch.getText().toString(), etBatsman.getText().toString(), etBowler.getText().toString(), etFielder.getText().toString(), arrayMatchType , currentPage, false,this)
     }
 
     @SuppressLint("SetTextI18n")
@@ -161,5 +231,24 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
         } else {
             t?.printStackTrace()
         }
+    }
+
+    override fun onSuccess_SearchPlayer(response: Response<SearchPlayerResponse>?, field_name: String) {
+        Toast.makeText(applicationContext, "Success", Toast.LENGTH_SHORT).show()
+       when(field_name){
+           "striker_name" -> {
+
+           }
+           "bowler_name" -> {
+
+           }
+           "fielder_name" -> {
+
+           }
+       }
+    }
+
+    override fun onFailure_SearchPlayer(t: Throwable?) {
+
     }
 }

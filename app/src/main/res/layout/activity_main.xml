@@ -90,7 +90,7 @@
 
  <android.support.design.widget.CoordinatorLayout
      android:layout_width="match_parent"
-     android:layout_height="match_parent"
+     android:layout_height="wrap_content"
      android:id="@+id/searchDialog"
      android:visibility="gone">
 
@@ -164,7 +164,9 @@
        android:layout_marginBottom="@dimen/margin_15"
        android:hint="@string/bowler"
        android:background="@null"
-       android:textSize="@dimen/text_16"/>
+       android:textSize="@dimen/text_16"
+       android:iconifiedByDefault="false"
+       />
 
    <View
        android:layout_width="match_parent"
@@ -188,7 +190,8 @@
        android:layout_marginBottom="@dimen/margin_15"
        android:hint="@string/fielder"
        android:background="@null"
-       android:textSize="@dimen/text_16"/>
+       android:textSize="@dimen/text_16"
+       android:iconifiedByDefault="false"/>
 
    <View
        android:layout_width="match_parent"
@@ -212,7 +215,8 @@
        android:layout_marginBottom="@dimen/margin_15"
        android:hint="@string/general_search"
        android:background="@null"
-       android:textSize="@dimen/text_16"/>
+       android:textSize="@dimen/text_16"
+       android:iconifiedByDefault="false"/>
 
    <View
        android:layout_width="match_parent"
@@ -258,7 +262,7 @@
         />
 
     <CheckBox
-        android:id="@+id/radiMultiDay"
+        android:id="@+id/radioMultiDay"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/background_radio"
