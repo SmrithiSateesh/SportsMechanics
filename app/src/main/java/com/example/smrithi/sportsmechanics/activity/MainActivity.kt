@@ -295,9 +295,9 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
     private fun showListInSpinner(listView: ListView, response: Response<SearchPlayerResponse>?) {
         val items = arrayOfNulls<String>(response!!.body()!!.data.total_count)
 
-        for (i in 0 until response!!.body()!!.data.total_count) {
+        for (i in 0 until response.body()!!.data.total_count) {
             //Storing names to string array
-            items[i] = response!!.body()!!.data.names[i];
+            items[i] = response.body()!!.data.names[i];
         }
         val adapter: ArrayAdapter<String>
         adapter = ArrayAdapter<String>(applicationContext, android.R.layout.simple_list_item_1, items)
