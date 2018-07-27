@@ -306,6 +306,7 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
             if (spinnerBatsman.visibility == View.VISIBLE){
                 etBatsman.setText(items[position])
                 spinnerBatsman.visibility = View.GONE
+
             }
             if (spinnerBowler.visibility == View.VISIBLE){
                 etBowler.setText(items[position])

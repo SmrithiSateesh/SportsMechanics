@@ -11,4 +11,5 @@
     <color name="blue_grey">#EEEEEE</color>
     <color name="light_grey">#bdbdbd</color>
     <color name="orange">#F4511E</color>
+    <color name="transparent_black">#BF000000</color>
 </resources>
