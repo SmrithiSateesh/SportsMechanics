@@ -20,8 +20,9 @@ class MainActivityPresenter {
             override fun doInBackground(vararg params: Void?) {
                 Log.d("PAGE "," loadFirstPage()")
                 val retrofitInstance = RetrofitInstance()
+                val client_id = 1
                 val service = retrofitInstance.getRetrofitInstance().create(GetSearchDataService::class.java)
-                val call = service.createSearchResquest(key, batsman, bowler, fielder, match_type, currentPage)
+                val call = service.createSearchResquest(key, batsman, bowler, fielder, match_type, currentPage, client_id.toString())
 
                 call.enqueue(object : Callback<SearchList> {
                     override fun onFailure(call: Call<SearchList>?, t: Throwable?) {

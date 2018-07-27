@@ -14,7 +14,8 @@ interface GetSearchDataService {
                              @Query("bowler") bowler : String,
                              @Query("fielder") fielder : String,
                              @Query("match_type") match_type : Array<String>,
-                             @Query("page") page : Int): Call<SearchList>
+                             @Query("page") page : Int,
+                             @Query("client_id") client_id : String): Call<SearchList>
 
     @GET("/api/search_player.json")
     fun searchPlayer(@Query("key")key : String,
