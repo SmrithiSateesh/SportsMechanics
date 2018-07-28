@@ -48,42 +48,62 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val watcher = object : TextWatcher {
-
-            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
-
-            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
+        etBatsman.addTextChangedListener(object : TextWatcher{
+            override fun afterTextChanged(s: Editable?) {
+                      layoutMatchType.visibility = View.VISIBLE
+                      txtMatchType.visibility = View.VISIBLE
+              }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
 
-            override fun afterTextChanged(editable: Editable) {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    if (s!!.length == 3) {
+                           initRxObservable_Batsman()
+                    }
+            }
+        })
+        etBowler.addTextChangedListener(object : TextWatcher{
+            override fun afterTextChanged(s: Editable?) {
+                  layoutMatchType.visibility = View.VISIBLE
+                  txtMatchType.visibility = View.VISIBLE
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                   if(s!!.length == 3) {
+                       initRxObservable_Bowler()
+                   }
+            }
+        })
+        etFielder.addTextChangedListener(object : TextWatcher{
+            override fun afterTextChanged(s: Editable?) {
                 layoutMatchType.visibility = View.VISIBLE
-                txtMatchType.visibility = View.VISIBLE
+                 txtMatchType.visibility = View.VISIBLE
             }
-        }
 
-        etBatsman.addTextChangedListener(watcher)
-        etBowler.addTextChangedListener(watcher)
-        etFielder.addTextChangedListener(watcher)
-        etGeneralSearch.addTextChangedListener(watcher)
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
-        val matchType = ArrayList<String>()
+            }
 
-        matchType.clear()
-        if (radioIPL.isChecked){
-            matchType.add("IPL")
-        }
-        if (radioODI.isChecked){
-            matchType.add("ODI")
-        }
-        if (radioMultiDay.isChecked){
-            matchType.add("TEST")
-        }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                 if(s!!.length == 3) {
+                           initRxObservable_Fielder()
+                 }
+            }
+        })
+        etGeneralSearch.addTextChangedListener(object : TextWatcher{
+            override fun afterTextChanged(s: Editable?) {
+                 layoutMatchType.visibility = View.VISIBLE
+                  txtMatchType.visibility = View.VISIBLE
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {     }
 
-        val arrayMatchType = arrayOf<String>()
-        for (j in 0 until matchType.size) {
-            arrayMatchType[j] = matchType.get(j)
-        }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { }
+        })
 
         mPresenter = MainActivityPresenter()
         adapter = SearchAdapter(this)
@@ -99,17 +119,37 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
         })
 
         btnSearch.setOnClickListener{
-                searchDialog.visibility = View.GONE
                 adapter.clearAll()
                 adapter.notifyDataSetChanged()
                 txt_no_result.visibility = View.GONE
                 txt_related_result.visibility = View.GONE
-                if (edtSearch!!.getText().toString().isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "Enter field name to search.", Toast.LENGTH_LONG).show()
-                    txt_related_result.visibility = View.GONE
-                } else {
+            if (etBatsman!!.getText().toString().isEmpty() && etBowler.getText().toString().isEmpty() && etFielder.getText().toString().isEmpty()
+                    && etGeneralSearch.getText().toString().isEmpty() && !radioIPL.isChecked && !radioMultiDay.isChecked && !radioODI.isChecked) {
+                Toast.makeText(getApplicationContext(), "Enter field name to search.", Toast.LENGTH_LONG).show()
+                txt_related_result.visibility = View.GONE
+            }
+            else {
+                val matchType = ArrayList<String>()
+
+                matchType.clear()
+                if (radioIPL.isChecked){
+                    matchType.add("Twenty20%20Match")
+                }
+                if (radioODI.isChecked){
+                     matchType.add("One%20Day%20Match")
+                }
+                if (radioMultiDay.isChecked){
+                    matchType.add("Test%20Match")
+                }
+
+              /*  val arrayMatchType = arrayOfNulls<String>(matchType.size)
+                for (j in 0 until matchType.size) {
+                    arrayMatchType[j] = matchType.get(j)
+                }*/
+                    searchDialog.visibility = View.GONE
                     currentPage = 1
-                    loadFirstPage(arrayMatchType)
+                    loadFirstPage(matchType)
+                Log.d("MatchType", " " + matchType)
                 }
             }
 
@@ -128,7 +168,24 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
                 Log.d("current_page", currentPage.toString())
                 if(TOTAL_PAGES >= currentPage) {
                     Log.d("PAGE "," loadNextPage()")
-                    loadNextPage(arrayMatchType)
+                    val matchType = ArrayList<String>()
+
+                    matchType.clear()
+                    if (radioIPL.isChecked){
+                        matchType.add("Twenty20%20Match")
+                    }
+                    if (radioODI.isChecked){
+                        matchType.add("One%20Day%20Match")
+                    }
+                    if (radioMultiDay.isChecked){
+                         matchType.add("Test%20Match")
+                    }
+
+                  /*  val arrayMatchType = arrayOfNulls<String>(matchType.size)
+                    for (j in 0 until matchType.size) {
+                        arrayMatchType[j] = matchType.get(j)
+                    }*/
+                    loadNextPage(matchType)
                 } else {
                     adapter.removeLoadingFooter()
                 }
@@ -147,10 +204,6 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
             }
         })
 
-        initRxObservable_Batsman()
-        initRxObservable_Bowler()
-        initRxObservable_Fielder()
-
         etBatsman.setOnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
                 spinnerBatsman.visibility = View.GONE }
@@ -168,7 +221,7 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
     private fun initRxObservable_Batsman() { //debounce for 1sec
 
         RxSearchObservable.fromView(etBatsman)
-                .debounce(300, TimeUnit.MILLISECONDS) // -> 1 second
+                .debounce(200, TimeUnit.MILLISECONDS) // -> 1 second
                 .filter { text -> !text.isEmpty() }
                 .distinctUntilChanged()
                 .subscribeOn(Schedulers.io())
@@ -181,7 +234,7 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
     private fun initRxObservable_Bowler() { //debounce for 1sec
 
         RxSearchObservable.fromView(etBowler)
-                .debounce(300, TimeUnit.MILLISECONDS) // -> 1 second
+                .debounce(200, TimeUnit.MILLISECONDS) // -> 1 second
                 .filter { text -> !text.isEmpty() }
                 .distinctUntilChanged()
                 .subscribeOn(Schedulers.io())
@@ -194,7 +247,7 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
     private fun initRxObservable_Fielder() { //debounce for 1sec
 
         RxSearchObservable.fromView(etFielder)
-                .debounce(300, TimeUnit.MILLISECONDS) // -> 1 second
+                .debounce(200, TimeUnit.MILLISECONDS) // -> 1 second
                 .filter { text -> !text.isEmpty() }
                 .distinctUntilChanged()
                 .subscribeOn(Schedulers.io())
@@ -205,13 +258,13 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
     }
 
 
-    private fun loadFirstPage(arrayMatchType: Array<String>) {
+    private fun loadFirstPage(arrayMatchType: ArrayList<String>) {
 
         progressDialog.visibility = View.VISIBLE
         mPresenter!!.loadSearchResult(etGeneralSearch.getText().toString(), etBatsman.getText().toString(), etBowler.getText().toString(), etFielder.getText().toString(), arrayMatchType , currentPage, true,this)
     }
 
-    private fun loadNextPage(arrayMatchType: Array<String>) {
+    private fun loadNextPage(arrayMatchType: ArrayList<String>) {
         progressDialog.visibility = View.VISIBLE
        // mPresenter!!.loadSearchResult(edtSearch.text.toString(), currentPage, false, this)
         mPresenter!!.loadSearchResult(etGeneralSearch.getText().toString(), etBatsman.getText().toString(), etBowler.getText().toString(), etFielder.getText().toString(), arrayMatchType , currentPage, false,this)
@@ -220,29 +273,34 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
     @SuppressLint("SetTextI18n")
     override fun onSuccess(response: Response<SearchList>?, firstQuery: Boolean) {
         if(firstQuery) {
-            if(response!!.body()!!.data != null){
-                TOTAL_PAGES = response.body()!!.total_pages
-                txt_no_result.visibility = View.GONE
-                txt_related_result.visibility = View.VISIBLE
-                txt_related_result.text = "Total related videos: " + response.body()!!.total_count
-                rvSearchResult.visibility = View.VISIBLE
-                adapter.addAll(response.body()!!.getData()!!)
-                Log.d("PAGE "," first response")
-                progressDialog!!.visibility = View.GONE
-            } else {
-                progressDialog!!.visibility = View.GONE
-                txt_no_result.visibility = View.VISIBLE
-                rvSearchResult.visibility = View.GONE
-                rvSearchResult.visibility = View.GONE
-            }
-            if (currentPage <= TOTAL_PAGES) {
-                adapter.removeLoadingFooter()
-                progressDialog!!.visibility = View.GONE
-                isLoading = false
-                Log.d("PAGE "," current <= total")
-            }
-            else {
-                isLastPage = true
+            try {
+                if (response!!.body()!!.data != null) {
+                    TOTAL_PAGES = response.body()!!.total_pages
+                    txt_no_result.visibility = View.GONE
+                    txt_related_result.visibility = View.VISIBLE
+                    txt_related_result.text = "Total related videos: " + response.body()!!.total_count
+                    rvSearchResult.visibility = View.VISIBLE
+                    adapter.addAll(response.body()!!.getData()!!)
+                    Log.d("PAGE ", " first response")
+                    progressDialog!!.visibility = View.GONE
+                } else {
+                    progressDialog!!.visibility = View.GONE
+                    txt_no_result.visibility = View.VISIBLE
+                    rvSearchResult.visibility = View.GONE
+                    rvSearchResult.visibility = View.GONE
+                }
+                if (currentPage <= TOTAL_PAGES) {
+                    adapter.removeLoadingFooter()
+                    progressDialog!!.visibility = View.GONE
+                    isLoading = false
+                    Log.d("PAGE ", " current <= total")
+                } else {
+                    isLastPage = true
+                }
+            }catch (e: Exception){
+                progressDialog.visibility = View.GONE
+                searchDialog.visibility = View.VISIBLE
+              Toast.makeText(applicationContext, "Please select the players name from the suggestion list", Toast.LENGTH_LONG).show()
             }
         } else {
             adapter.removeLoadingFooter()
@@ -287,35 +345,35 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
        }
     }
 
-    override fun onFailure_SearchPlayer(t: Throwable?) {
-
-    }
+    override fun onFailure_SearchPlayer(t: Throwable?) { }
 
     private fun showListInSpinner(listView: ListView, response: Response<SearchPlayerResponse>?) {
-        val items = arrayOfNulls<String>(response!!.body()!!.data.total_count)
 
-        for (i in 0 until response.body()!!.data.total_count) {
-            //Storing names to string array
-            items[i] = response.body()!!.data.names[i];
-        }
-        val adapter: ArrayAdapter<String>
-        adapter = ArrayAdapter<String>(applicationContext, android.R.layout.simple_list_item_1, items)
-        listView.setAdapter(adapter)
-
-        listView.setOnItemClickListener { parent, view, position, id ->
-            if (spinnerBatsman.visibility == View.VISIBLE){
-                etBatsman.setText(items[position])
-                spinnerBatsman.visibility = View.GONE
-
+        try {
+               val items = ArrayList<String>(response!!.body()!!.data.names.size)
+                items.clear()
+            if (response.body()!!.data.names.isNotEmpty()) {
+               items.addAll(response.body()!!.data.names)
             }
-            if (spinnerBowler.visibility == View.VISIBLE){
-                etBowler.setText(items[position])
-                spinnerBowler.visibility = View.GONE
+            val adapter: ArrayAdapter<String>
+            adapter = ArrayAdapter<String>(applicationContext, android.R.layout.simple_list_item_1, items)
+            listView.setAdapter(adapter)
+            listView.setOnItemClickListener { parent, view, position, id ->
+                if (spinnerBatsman.visibility == View.VISIBLE) {
+                    etBatsman.setText(items[position])
+                    spinnerBatsman.visibility = View.GONE
+                }
+                if (spinnerBowler.visibility == View.VISIBLE) {
+                    etBowler.setText(items[position])
+                    spinnerBowler.visibility = View.GONE
+                }
+                if (spinnerFielder.visibility == View.VISIBLE) {
+                    etFielder.setText(items[position])
+                    spinnerFielder.visibility = View.GONE
+                }
             }
-            if (spinnerFielder.visibility == View.VISIBLE){
-                etFielder.setText(items[position])
-                spinnerFielder.visibility = View.GONE
-            }
+        }catch (e: Exception){
+            Toast.makeText(applicationContext, "Something went wrong. Please try again later.", Toast.LENGTH_LONG).show()
         }
     }
 }

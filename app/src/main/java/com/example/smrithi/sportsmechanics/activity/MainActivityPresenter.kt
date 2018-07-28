@@ -15,7 +15,7 @@ import retrofit2.Response
 @SuppressLint("StaticFieldLeak")
 class MainActivityPresenter {
 
-    fun loadSearchResult(key: String, batsman: String, bowler: String, fielder: String, match_type: Array<String>, currentPage: Int, firstQuery: Boolean, listener: ResponseInterface) {
+    fun loadSearchResult(key: String, batsman: String, bowler: String, fielder: String, match_type: ArrayList<String>, currentPage: Int, firstQuery: Boolean, listener: ResponseInterface) {
         object : AsyncTask<Void, Void, Unit>() {
             override fun doInBackground(vararg params: Void?) {
                 Log.d("PAGE "," loadFirstPage()")

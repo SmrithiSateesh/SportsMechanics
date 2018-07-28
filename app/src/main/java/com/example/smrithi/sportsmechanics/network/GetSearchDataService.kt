@@ -9,13 +9,13 @@ import retrofit2.http.Query
 interface GetSearchDataService {
 
     @GET("api/search.json")
-    fun createSearchResquest(@Query("key") keyValue : String,
-                             @Query("batsman") batsman : String,
-                             @Query("bowler") bowler : String,
-                             @Query("fielder") fielder : String,
-                             @Query("match_type") match_type : Array<String>,
-                             @Query("page") page : Int,
-                             @Query("client_id") client_id : String): Call<SearchList>
+    fun createSearchResquest(@Query("key") keyValue: String,
+                             @Query("batsman") batsman: String,
+                             @Query("bowler") bowler: String,
+                             @Query("fielder") fielder: String,
+                             @Query("match_type[]") match_type_ODI: ArrayList<String>,
+                             @Query("page") page: Int,
+                             @Query("client_id") client_id: String): Call<SearchList>
 
     @GET("/api/search_player.json")
     fun searchPlayer(@Query("key")key : String,
