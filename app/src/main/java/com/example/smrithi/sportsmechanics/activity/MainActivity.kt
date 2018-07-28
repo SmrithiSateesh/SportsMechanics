@@ -124,9 +124,11 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
                 txt_no_result.visibility = View.GONE
                 txt_related_result.visibility = View.GONE
             if (etBatsman!!.getText().toString().isEmpty() && etBowler.getText().toString().isEmpty() && etFielder.getText().toString().isEmpty()
-                    && etGeneralSearch.getText().toString().isEmpty() && !radioIPL.isChecked && !radioMultiDay.isChecked && !radioODI.isChecked) {
+                    && etGeneralSearch.getText().toString().isEmpty()) {
                 Toast.makeText(getApplicationContext(), "Enter field name to search.", Toast.LENGTH_LONG).show()
                 txt_related_result.visibility = View.GONE
+            }else if(spinnerBatsman.visibility == View.VISIBLE || spinnerBowler.visibility == View.VISIBLE || spinnerFielder.visibility == View.VISIBLE){
+                Toast.makeText(applicationContext, "Please select player name from the suggestion list.", Toast.LENGTH_LONG).show()
             }
             else {
                 val matchType = ArrayList<String>()
