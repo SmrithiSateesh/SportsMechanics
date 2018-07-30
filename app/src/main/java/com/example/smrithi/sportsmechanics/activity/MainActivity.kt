@@ -375,7 +375,6 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
                 }
             }
         }catch (e: Exception){
-            Toast.makeText(applicationContext, "Something went wrong. Please try again later.", Toast.LENGTH_LONG).show()
         }
     }
 }
