@@ -131,27 +131,31 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
                 Toast.makeText(applicationContext, "Please select player name from the suggestion list.", Toast.LENGTH_LONG).show()
             }
             else {
-                val matchType = ArrayList<String>()
 
-                matchType.clear()
+                var t_20 = "*"
+                var odi = "*"
+                var testMatch = "*"
+
                 if (radioIPL.isChecked){
-                    matchType.add("Twenty20%20Match")
+                    t_20 = "Twenty20 Match"
                 }
                 if (radioODI.isChecked){
-                     matchType.add("One%20Day%20Match")
-                }
-                if (radioMultiDay.isChecked){
-                    matchType.add("Test%20Match")
+                    odi = "One Day Match"
                 }
 
-              /*  val arrayMatchType = arrayOfNulls<String>(matchType.size)
-                for (j in 0 until matchType.size) {
-                    arrayMatchType[j] = matchType.get(j)
-                }*/
+                if (radioMultiDay.isChecked){
+                    testMatch="Test Match"
+                }
                     searchDialog.visibility = View.GONE
                     currentPage = 1
-                    loadFirstPage(matchType)
-                Log.d("MatchType", " " + matchType)
+
+                if(t_20.equals("*") && odi.equals("*") && testMatch.equals("*")){
+                    t_20 = "Twenty20 Match"
+                    odi = "One Day Match"
+                    testMatch= "Test Match"
+                }
+
+                loadFirstPage(t_20, odi, testMatch)
                 }
             }
 
@@ -170,24 +174,30 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
                 Log.d("current_page", currentPage.toString())
                 if(TOTAL_PAGES >= currentPage) {
                     Log.d("PAGE "," loadNextPage()")
-                    val matchType = ArrayList<String>()
 
-                    matchType.clear()
+                    var t_20 = "*"
+                    var odi = "*"
+                    var testMatch = "*"
+
                     if (radioIPL.isChecked){
-                        matchType.add("Twenty20%20Match")
+                        t_20 = "Twenty20 Match"
                     }
                     if (radioODI.isChecked){
-                        matchType.add("One%20Day%20Match")
-                    }
-                    if (radioMultiDay.isChecked){
-                         matchType.add("Test%20Match")
+                        odi = "One Day Match"
                     }
 
-                  /*  val arrayMatchType = arrayOfNulls<String>(matchType.size)
-                    for (j in 0 until matchType.size) {
-                        arrayMatchType[j] = matchType.get(j)
-                    }*/
-                    loadNextPage(matchType)
+                    if (radioMultiDay.isChecked){
+                        testMatch="Test Match"
+                    }
+                    searchDialog.visibility = View.GONE
+                    currentPage = 1
+
+                    if(t_20.equals("*") && odi.equals("*") && testMatch.equals("*")){
+                        t_20 = "Twenty20 Match"
+                        odi = "One Day Match"
+                        testMatch= "Test Match"
+                    }
+                    loadNextPage(t_20, odi, testMatch)
                 } else {
                     adapter.removeLoadingFooter()
                 }
@@ -260,20 +270,21 @@ class MainActivity : AppCompatActivity(), SearchClickListener, ResponseInterface
     }
 
 
-    private fun loadFirstPage(arrayMatchType: ArrayList<String>) {
+    private fun loadFirstPage(t_20: String, odi: String, testMatch: String) {
 
         progressDialog.visibility = View.VISIBLE
-        mPresenter!!.loadSearchResult(etGeneralSearch.getText().toString(), etBatsman.getText().toString(), etBowler.getText().toString(), etFielder.getText().toString(), arrayMatchType , currentPage, true,this)
+        mPresenter!!.loadSearchResult(etGeneralSearch.getText().toString(), etBatsman.getText().toString(), etBowler.getText().toString(), etFielder.getText().toString(), arrayOf(t_20, odi, testMatch) , currentPage, true,this)
     }
 
-    private fun loadNextPage(arrayMatchType: ArrayList<String>) {
+    private fun loadNextPage(t_20: String, odi: String, testMatch: String) {
         progressDialog.visibility = View.VISIBLE
        // mPresenter!!.loadSearchResult(edtSearch.text.toString(), currentPage, false, this)
-        mPresenter!!.loadSearchResult(etGeneralSearch.getText().toString(), etBatsman.getText().toString(), etBowler.getText().toString(), etFielder.getText().toString(), arrayMatchType , currentPage, false,this)
+        mPresenter!!.loadSearchResult(etGeneralSearch.getText().toString(), etBatsman.getText().toString(), etBowler.getText().toString(), etFielder.getText().toString(), arrayOf(t_20, odi, testMatch) , currentPage, false,this)
     }
 
     @SuppressLint("SetTextI18n")
     override fun onSuccess(response: Response<SearchList>?, firstQuery: Boolean) {
+        Log.d("Response: ", " " + response)
         if(firstQuery) {
             try {
                 if (response!!.body()!!.data != null) {

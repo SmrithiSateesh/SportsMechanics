@@ -84,18 +84,20 @@
      android:layout_gravity="center_horizontal"
      android:id="@+id/progressDialog"
      android:padding="5dp"
-     android:indeterminateTint="@color/orange"/>
+     android:indeterminateTint="@color/orange"
+     tools:targetApi="lollipop" />
 
 </LinearLayout>
 
 
   <LinearLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="match_parent"
       android:orientation="vertical"
       android:background="@color/colorWhite"
-      android:visibility="gone"
-      android:id="@+id/searchDialog">
+      android:id="@+id/searchDialog"
+      android:contentDescription="@null"
+      android:visibility="gone">
 
   <RelativeLayout
       android:layout_width="match_parent"
@@ -106,7 +108,8 @@
        android:layout_height="wrap_content"
        android:src="@drawable/ic_backspace"
        android:id="@+id/ivBack"
-       android:padding="@dimen/default_margin"/>
+       android:padding="@dimen/default_margin"
+       android:contentDescription="@null"/>
 
    <TextView
        android:layout_width="wrap_content"
@@ -263,7 +266,8 @@
        android:hint="@string/general_search"
        android:background="@null"
        android:textSize="@dimen/text_16"
-       android:iconifiedByDefault="false"/>
+       android:iconifiedByDefault="false"
+       android:inputType="textCapWords"/>
 
    <View
        android:layout_width="match_parent"
@@ -338,7 +342,7 @@
        android:stateListAnimator="@null"
        android:layout_marginTop="@dimen/margin_10"
        android:layout_marginBottom="@dimen/margin_10"
-       />
+       tools:targetApi="lollipop" />
 
         <View
             android:layout_width="match_parent"

@@ -13,7 +13,7 @@ interface GetSearchDataService {
                              @Query("batsman") batsman: String,
                              @Query("bowler") bowler: String,
                              @Query("fielder") fielder: String,
-                             @Query("match_type[]") match_type_ODI: ArrayList<String>,
+                             @Query("match_type[]") match_type_ODI: Array<String>,
                              @Query("page") page: Int,
                              @Query("client_id") client_id: String): Call<SearchList>
 
